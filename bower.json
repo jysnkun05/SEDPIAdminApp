@@ -1,0 +1,29 @@
+{
+  "name": "SEDPIAdminApp",
+  "description": "SEDPI Admin Side Web App",
+  "main": "",
+  "authors": [
+    "jysn <jysndlsrys05@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "SEDPI"
+  ],
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-material-design": "~0.5.8",
+    "font-awesome": "fontawesome#~4.5.0",
+    "snackbarjs": "~1.1.0",
+    "accounting": "~0.3.2",
+    "Materialize": "materialize#~0.97.5"
+  }
+}
