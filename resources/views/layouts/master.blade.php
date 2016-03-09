@@ -16,9 +16,11 @@
         <link rel="stylesheet" href="{{asset('common/css/main.css')}}">
         <link rel="stylesheet" href="{{asset('common/css/bootstrap.min.css')}}">
         <link rel="stylesheet" href="{{asset('common/css/bootstrap-material-design.min.css')}}">
+        <link rel="stylesheet" href="{{asset('common/css/bootstrap-material-datetimepicker.css')}}">
         <link rel="stylesheet" href="{{asset('common/css/ripples.min.css')}}">
         <link rel="stylesheet" href="{{asset('common/css/font-awesome.min.css')}}">
         <link rel="stylesheet" href="{{asset('common/css/snackbar.min.css')}}">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         <script src="{{asset('common/js/modernizr-2.8.3-respond-1.4.2.min.js')}}"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -42,6 +44,10 @@
         <script src="{{asset('common/js/material.min.js')}}"></script>
         <script src="{{asset('common/js/ripples.min.js')}}"></script>
         <script src="{{asset('common/js/snackbar.min.js')}}"></script>
+        <script src="{{asset('common/js/moment.min.js')}}"></script>
+        <script src="{{asset('common/js/bootstrap-material-datetimepicker.js')}}"></script>
+        <script src="{{asset('common/js/accounting.min.js')}}"></script>
+        
         <script src="{{asset('app/bundle.js')}}"></script>
 
         <script type="text/javascript">

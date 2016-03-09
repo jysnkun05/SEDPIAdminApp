@@ -24,6 +24,8 @@
     "font-awesome": "fontawesome#~4.5.0",
     "snackbarjs": "~1.1.0",
     "accounting": "~0.3.2",
-    "Materialize": "materialize#~0.97.5"
+    "Materialize": "materialize#~0.97.5",
+    "arrive": "~2.3.0",
+    "bootstrap-material-datetimepicker": "~2.5.3"
   }
 }

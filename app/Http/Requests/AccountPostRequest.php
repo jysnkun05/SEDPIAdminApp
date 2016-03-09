@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 use Auth;
+use Input;
 
 class AccountPostRequest extends Request
 {
@@ -24,10 +25,21 @@ class AccountPostRequest extends Request
      */
     public function rules()
     {
-        return [
-            'name' => 'required',
-            'type' => 'required',
-            'email' => 'email'
-        ];
+        if(!Request::get('id'))
+        {
+            return [
+                'name' => 'required',
+                'type' => 'required',
+                'email' => 'email|unique:accounts,email'
+            ];
+        }
+        else
+        {
+            return [
+                'name' => 'required',
+                'type' => 'required',
+                'email' => 'email|unique:accounts,email,'.Request::get('id')
+            ];
+        }
     }
 }

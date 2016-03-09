@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 const alertDanger = "alert alert-dismissible alert-danger";
 const alertSuccess = "alert alert-dismissible alert-success";
+const alertInfo = "alert alert-dismissible alert-info";
 
 export default class ModalMessageComponent extends Component {
 	constructor (props) {
@@ -21,12 +22,15 @@ export default class ModalMessageComponent extends Component {
 				case 'error':
 					alertClass = alertDanger;
 					break;
+				case 'info':
+					alertClass = alertInfo;
+					break;
 			}		
 
 			modalContent = <div className={alertClass}>
 								<button type="button" className="close" data-dismiss="modal">×</button>
 							  	{modal.message}
-							</div>
+							</div>;
 		}
 
 		return (

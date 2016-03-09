@@ -13,7 +13,7 @@ gulp.task('common-css', function() {
 		BOWER_FILES + 'bootstrap-material-design/dist/css/ripples.min.css',
 		BOWER_FILES + 'font-awesome/css/font-awesome.min.css',
 		BOWER_FILES + 'snackbarjs/dist/snackbar.min.css',
-		BOWER_FILES + 'Materialize/dist/css/materialize.min.css'
+		BOWER_FILES + 'bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css'
 	])
 	.pipe(checkFileSize())
 	.pipe(gulp.dest('./public/common/css'));
@@ -27,7 +27,9 @@ gulp.task('common-js', function () {
 		BOWER_FILES + 'jquery/dist/jquery.min.js',
 		BOWER_FILES + 'snackbarjs/dist/snackbar.min.js',
 		BOWER_FILES + 'accounting/accounting.min.js',
-		BOWER_FILES + 'Materialize/dist/js/materialize.min.js',
+		BOWER_FILES + 'arrive/minified/arrive.min.js',
+		BOWER_FILES + 'momentjs/min/moment.min.js',
+		BOWER_FILES + 'bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js'
 	])
 	.pipe(checkFileSize())
 	.pipe(gulp.dest('./public/common/js'));
@@ -35,7 +37,7 @@ gulp.task('common-js', function () {
 
 gulp.task('common-fonts', function () {
 	return gulp.src([
-		BOWER_FILES + 'font-awesome/fonts/**.*',
+		BOWER_FILES + 'font-awesome/fonts/**.*'
 	])
 	.pipe(checkFileSize())
 	.pipe(gulp.dest('./public/common/fonts'));
@@ -43,7 +45,8 @@ gulp.task('common-fonts', function () {
 
 gulp.task('common-font', function () {
 	return gulp.src([
-		BOWER_FILES + 'Materialize/dist/font/**/**.*'
+		BOWER_FILES + 'Materialize/dist/font/**/**.*',
+		BOWER_FILES + ''
 	])
 	.pipe(checkFileSize())
 	.pipe(gulp.dest('./public/common/font'));

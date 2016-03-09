@@ -6,9 +6,19 @@ export default class AccountTableComponent extends Component {
 		this.state = {accounts: undefined};
 
 		this.getAllAccounts = this.getAllAccounts.bind(this);
+		this.retry = this.retry.bind(this);
 
 		this.getAllAccounts(0);
 	}
+
+	componentDidMount () {
+		this.timer = setInterval(this.retry, 100000);
+	}
+
+	retry () {
+		this.setState({accounts: undefined});
+		this.getAllAccounts(0);
+	};
 
 	getAllAccounts(counter) {
 		$.ajax({
@@ -30,16 +40,20 @@ export default class AccountTableComponent extends Component {
 
 	render () {
 		const accounts = this.state.accounts;
-		var view = 	<div className="panel panel-default">
-						<div className="panel-body text-center">
-							<i className="fa fa-circle-o-notch fa-fw fa-spin"></i> Loading Accounts
-						</div>
-					</div>;
+		var view;
 		if(accounts === undefined)
 		{
 			view = 	<div className="panel panel-default">
 						<div className="panel-body text-center">
 							<i className="fa fa-circle-o-notch fa-fw fa-spin"></i> Loading Accounts
+						</div>
+					</div>;
+		}
+		else if(accounts === 'error')
+		{
+			view = <div className="panel panel-default">
+						<div className="panel-body text-center">
+							<i className="fa fa-exclamation-triangle fa-fw"></i> Unable to load Accounts. <a href="javascript:void(0)" className="btn-xs" onClick={this.retry}>Retry</a>
 						</div>
 					</div>;
 		}
@@ -68,7 +82,7 @@ export default class AccountTableComponent extends Component {
 								<th>#</th>
 								<th>Account Name</th>
 								<th>Account Type</th>
-								<th>Balance</th>
+								<th className="text-right">Balance</th>
 								<th></th>
 							</tr>
 						</thead>
@@ -78,8 +92,11 @@ export default class AccountTableComponent extends Component {
 											<td>{index + 1}</td>
 											<td>{account.name}</td>
 											<td>{account.type}</td>
-											<td>{account.balance}</td>
-											<td><a href={"/accounts/details/" + account.id} className="btn-xs">View Details</a></td>
+											<td className="text-right">{accounting.formatMoney(account.balance, 'Php ')}</td>
+											<td>
+												<a href={"/accounts/details/" + account.id + "/view-account"} className="btn-xs">View Details</a>
+												<a href={"/accounts/details/" + account.id + "/view-soa"} className="btn-xs">View Statement of Account</a> 
+											</td>
 										</tr>;
 							})}
 						</tbody>

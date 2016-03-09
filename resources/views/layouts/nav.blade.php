@@ -11,7 +11,6 @@
 		<div class="navbar-collapse collapse navbar-responsive-collapse">
 			<ul class="nav navbar-nav">
 				<li class="active"><a href="{{route('accounts_index')}}">Investors</a></li>
-				<li><a href="javascript:void(0)">Transactions</a></li>	
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">

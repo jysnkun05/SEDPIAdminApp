@@ -62,13 +62,33 @@
 
 	var _AccountTableComponent2 = _interopRequireDefault(_AccountTableComponent);
 
-	var _AddAccountForm = __webpack_require__(163);
+	var _TransactionTableComponent = __webpack_require__(163);
+
+	var _TransactionTableComponent2 = _interopRequireDefault(_TransactionTableComponent);
+
+	var _AddAccountForm = __webpack_require__(164);
 
 	var _AddAccountForm2 = _interopRequireDefault(_AddAccountForm);
 
-	var _ViewAccountForm = __webpack_require__(167);
+	var _ViewAccountForm = __webpack_require__(168);
 
 	var _ViewAccountForm2 = _interopRequireDefault(_ViewAccountForm);
+
+	var _EditAccountForm = __webpack_require__(169);
+
+	var _EditAccountForm2 = _interopRequireDefault(_EditAccountForm);
+
+	var _EditUserForm = __webpack_require__(171);
+
+	var _EditUserForm2 = _interopRequireDefault(_EditUserForm);
+
+	var _AddTransactionForm = __webpack_require__(173);
+
+	var _AddTransactionForm2 = _interopRequireDefault(_AddTransactionForm);
+
+	var _ViewTransactionForm = __webpack_require__(175);
+
+	var _ViewTransactionForm2 = _interopRequireDefault(_ViewTransactionForm);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -78,10 +98,43 @@
 
 	if (_typeof($("#addAccountFormContainer").prop('tagName')) !== ( true ? 'undefined' : _typeof(undefined))) (0, _reactDom.render)(_react2.default.createElement(_AddAccountForm2.default, null), document.getElementById('addAccountFormContainer'));
 
-	if (_typeof($("#viewAccountFormContainer").prop('tagName')) !== ( true ? 'undefined' : _typeof(undefined))) {
+	if (_typeof($("#viewAccountContainer").prop('tagName')) !== ( true ? 'undefined' : _typeof(undefined))) {
 		var splits = window.location.href.split('/');
-		var id = splits[splits.length - 1];
-		(0, _reactDom.render)(_react2.default.createElement(_ViewAccountForm2.default, { id: id }), document.getElementById('viewAccountFormContainer'));
+		var id = splits[splits.length - 2];
+		console.log(id);
+		(0, _reactDom.render)(_react2.default.createElement(_ViewAccountForm2.default, { id: id }), document.getElementById('viewAccountContainer'));
+	}
+
+	if (_typeof($("#editAccountFormContainer").prop('tagName')) !== ( true ? 'undefined' : _typeof(undefined))) {
+		var splits = window.location.href.split('/');
+		var id = splits[splits.length - 2];
+		(0, _reactDom.render)(_react2.default.createElement(_EditAccountForm2.default, { id: id }), document.getElementById('editAccountFormContainer'));
+	}
+
+	if (_typeof($("#editUserFormContainer").prop('tagName')) !== ( true ? 'undefined' : _typeof(undefined))) {
+		var splits = window.location.href.split('/');
+		var id = splits[splits.length - 2];
+		(0, _reactDom.render)(_react2.default.createElement(_EditUserForm2.default, { id: id }), document.getElementById('editUserFormContainer'));
+	}
+
+	if (_typeof($("#transactionsTableContainer").prop('tagName')) !== ( true ? 'undefined' : _typeof(undefined))) {
+		var splits = window.location.href.split('/');
+		var id = splits[splits.length - 2];
+		(0, _reactDom.render)(_react2.default.createElement(_TransactionTableComponent2.default, { id: id }), document.getElementById('transactionsTableContainer'));
+	}
+
+	if (_typeof($("#addTransactionFormContainer").prop('tagName')) !== ( true ? 'undefined' : _typeof(undefined))) {
+		var splits = window.location.href.split('/');
+		var id = splits[splits.length - 2];
+		(0, _reactDom.render)(_react2.default.createElement(_AddTransactionForm2.default, { id: id }), document.getElementById('addTransactionFormContainer'));
+	}
+
+	if (_typeof($("#viewTransactionFormContainer").prop('tagName')) !== ( true ? 'undefined' : _typeof(undefined))) {
+		var splits = window.location.href.split('/');
+		var account_id = splits[splits.length - 4];
+		var trans_id = splits[splits.length - 2];
+		console.log(account_id);
+		(0, _reactDom.render)(_react2.default.createElement(_ViewTransactionForm2.default, { account_id: account_id, trans_id: trans_id }), document.getElementById('viewTransactionFormContainer'));
 	}
 
 /***/ },
@@ -20068,12 +20121,24 @@
 			_this.state = { accounts: undefined };
 
 			_this.getAllAccounts = _this.getAllAccounts.bind(_this);
+			_this.retry = _this.retry.bind(_this);
 
 			_this.getAllAccounts(0);
 			return _this;
 		}
 
 		_createClass(AccountTableComponent, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				this.timer = setInterval(this.retry, 100000);
+			}
+		}, {
+			key: 'retry',
+			value: function retry() {
+				this.setState({ accounts: undefined });
+				this.getAllAccounts(0);
+			}
+		}, {
 			key: 'getAllAccounts',
 			value: function getAllAccounts(counter) {
 				$.ajax({
@@ -20093,16 +20158,7 @@
 			key: 'render',
 			value: function render() {
 				var accounts = this.state.accounts;
-				var view = _react2.default.createElement(
-					'div',
-					{ className: 'panel panel-default' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'panel-body text-center' },
-						_react2.default.createElement('i', { className: 'fa fa-circle-o-notch fa-fw fa-spin' }),
-						' Loading Accounts'
-					)
-				);
+				var view;
 				if (accounts === undefined) {
 					view = _react2.default.createElement(
 						'div',
@@ -20112,6 +20168,22 @@
 							{ className: 'panel-body text-center' },
 							_react2.default.createElement('i', { className: 'fa fa-circle-o-notch fa-fw fa-spin' }),
 							' Loading Accounts'
+						)
+					);
+				} else if (accounts === 'error') {
+					view = _react2.default.createElement(
+						'div',
+						{ className: 'panel panel-default' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-body text-center' },
+							_react2.default.createElement('i', { className: 'fa fa-exclamation-triangle fa-fw' }),
+							' Unable to load Accounts. ',
+							_react2.default.createElement(
+								'a',
+								{ href: 'javascript:void(0)', className: 'btn-xs', onClick: this.retry },
+								'Retry'
+							)
 						)
 					);
 				} else if (accounts.length <= 0) {
@@ -20189,7 +20261,7 @@
 								),
 								_react2.default.createElement(
 									'th',
-									null,
+									{ className: 'text-right' },
 									'Balance'
 								),
 								_react2.default.createElement('th', null)
@@ -20219,16 +20291,21 @@
 									),
 									_react2.default.createElement(
 										'td',
-										null,
-										account.balance
+										{ className: 'text-right' },
+										accounting.formatMoney(account.balance, 'Php ')
 									),
 									_react2.default.createElement(
 										'td',
 										null,
 										_react2.default.createElement(
 											'a',
-											{ href: "/accounts/details/" + account.id, className: 'btn-xs' },
+											{ href: "/accounts/details/" + account.id + "/view-account", className: 'btn-xs' },
 											'View Details'
+										),
+										_react2.default.createElement(
+											'a',
+											{ href: "/accounts/details/" + account.id + "/view-soa", className: 'btn-xs' },
+											'View Statement of Account'
 										)
 									)
 								);
@@ -20263,6 +20340,276 @@
 		value: true
 	});
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var TransactionTableComponent = function (_Component) {
+		_inherits(TransactionTableComponent, _Component);
+
+		function TransactionTableComponent(props) {
+			_classCallCheck(this, TransactionTableComponent);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TransactionTableComponent).call(this, props));
+
+			_this.state = { transactions: undefined };
+
+			_this.getAllTransactions = _this.getAllTransactions.bind(_this);
+			_this.retry = _this.retry.bind(_this);
+
+			_this.getAllTransactions(0);
+			return _this;
+		}
+
+		_createClass(TransactionTableComponent, [{
+			key: 'retry',
+			value: function retry() {
+				this.setState({ transactions: undefined });
+				this.getAllTransactions(0);
+			}
+		}, {
+			key: 'getAllTransactions',
+			value: function getAllTransactions(counter) {
+				$.ajax({
+					url: '/api/transactions/getAllTransactions/' + this.props.id,
+					type: 'POST',
+					dataType: 'json',
+					cache: false,
+					success: function (transactions) {
+						this.setState({ transactions: transactions });
+					}.bind(this),
+					error: function (xhr, status, error) {
+						if (counter <= 3) this.getAllTransactions(counter + 1);else this.setState({ transactions: status });
+					}.bind(this)
+				});
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var transactions = this.state.transactions;
+				var view;
+				if (transactions === undefined) {
+					view = _react2.default.createElement(
+						'div',
+						{ className: 'panel panel-default' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-body text-center' },
+							_react2.default.createElement('i', { className: 'fa fa-circle-o-notch fa-fw fa-spin' }),
+							' Loading Accounts'
+						)
+					);
+				} else if (transactions === 'error') {
+					view = _react2.default.createElement(
+						'div',
+						{ className: 'panel panel-default' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-body text-center' },
+							_react2.default.createElement('i', { className: 'fa fa-exclamation-triangle fa-fw' }),
+							' Unable to load Accounts. ',
+							_react2.default.createElement(
+								'a',
+								{ href: 'javascript:void(0)', className: 'btn-xs', onClick: this.retry },
+								'Retry'
+							)
+						)
+					);
+				} else if (transactions.length <= 0) {
+					view = _react2.default.createElement(
+						'table',
+						{ className: 'table table-striped' },
+						_react2.default.createElement(
+							'thead',
+							null,
+							_react2.default.createElement(
+								'tr',
+								null,
+								_react2.default.createElement(
+									'th',
+									null,
+									'Date'
+								),
+								_react2.default.createElement(
+									'th',
+									null,
+									'Transaction Details'
+								),
+								_react2.default.createElement(
+									'th',
+									{ className: 'text-right' },
+									'Debit'
+								),
+								_react2.default.createElement(
+									'th',
+									{ className: 'text-right' },
+									'Credit'
+								),
+								_react2.default.createElement(
+									'th',
+									{ className: 'text-right' },
+									'Balance'
+								),
+								_react2.default.createElement('th', null)
+							)
+						),
+						_react2.default.createElement(
+							'tbody',
+							null,
+							_react2.default.createElement(
+								'tr',
+								{ className: 'text-center' },
+								_react2.default.createElement(
+									'td',
+									{ colSpan: '6' },
+									_react2.default.createElement('i', { className: 'fa fa-info-circle fa-fw' }),
+									' No Transactions Created.'
+								)
+							)
+						)
+					);
+				} else if (transactions.length > 0) {
+					view = _react2.default.createElement(
+						'table',
+						{ className: 'table table-striped table-hover' },
+						_react2.default.createElement(
+							'thead',
+							null,
+							_react2.default.createElement(
+								'tr',
+								null,
+								_react2.default.createElement(
+									'th',
+									null,
+									'Date'
+								),
+								_react2.default.createElement(
+									'th',
+									null,
+									'Transaction Details'
+								),
+								_react2.default.createElement(
+									'th',
+									{ className: 'text-right' },
+									'Debit'
+								),
+								_react2.default.createElement(
+									'th',
+									{ className: 'text-right' },
+									'Credit'
+								),
+								_react2.default.createElement(
+									'th',
+									{ className: 'text-right' },
+									'Balance'
+								),
+								_react2.default.createElement('th', null)
+							)
+						),
+						_react2.default.createElement(
+							'tbody',
+							null,
+							transactions.map(function (transaction, index) {
+								return _react2.default.createElement(
+									'tr',
+									{ key: index },
+									_react2.default.createElement(
+										'td',
+										null,
+										transaction.date_transaction
+									),
+									_react2.default.createElement(
+										'td',
+										null,
+										transaction.transaction_type.description
+									),
+									_react2.default.createElement(
+										'td',
+										{ className: 'text-right' },
+										!transaction.transaction_type.is_deduct ? '' : accounting.formatMoney(transaction.amount, 'Php ')
+									),
+									_react2.default.createElement(
+										'td',
+										{ className: 'text-right' },
+										transaction.transaction_type.is_deduct ? '' : accounting.formatMoney(transaction.amount, 'Php ')
+									),
+									_react2.default.createElement(
+										'td',
+										{ className: 'text-right' },
+										accounting.formatMoney(transaction.running_balance, 'Php ')
+									),
+									_react2.default.createElement(
+										'td',
+										null,
+										_react2.default.createElement(
+											'a',
+											{ href: transaction.detail_url, className: 'btn-xs' },
+											'View Details'
+										)
+									)
+								);
+							})
+						)
+					);
+				}
+				return _react2.default.createElement(
+					'div',
+					{ className: 'row' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'col-md-12' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel panel-default' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'panel-heading' },
+								'Statement of Account'
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'panel-body' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'row' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'col-md-12' },
+										view
+									)
+								)
+							)
+						)
+					)
+				);
+			}
+		}]);
+
+		return TransactionTableComponent;
+	}(_react.Component);
+
+	exports.default = TransactionTableComponent;
+
+/***/ },
+/* 164 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -20271,15 +20618,15 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _AddAccountFormComponent = __webpack_require__(164);
+	var _AddAccountFormComponent = __webpack_require__(165);
 
 	var _AddAccountFormComponent2 = _interopRequireDefault(_AddAccountFormComponent);
 
-	var _ModalMessageComponent = __webpack_require__(165);
+	var _ModalMessageComponent = __webpack_require__(166);
 
 	var _ModalMessageComponent2 = _interopRequireDefault(_ModalMessageComponent);
 
-	var _ModalContinueDialogComponent = __webpack_require__(166);
+	var _ModalContinueDialogComponent = __webpack_require__(167);
 
 	var _ModalContinueDialogComponent2 = _interopRequireDefault(_ModalContinueDialogComponent);
 
@@ -20411,7 +20758,7 @@
 	exports.default = AddAccountForm;
 
 /***/ },
-/* 164 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20446,8 +20793,15 @@
 
 			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AddAccountFormComponent).call(this, props));
 
+			_this.state = {
+				email: '',
+				is_verified: false
+			};
+
 			_this.handleSubmit = _this.handleSubmit.bind(_this);
 			_this.handleCancel = _this.handleCancel.bind(_this);
+			_this.handleEmailChange = _this.handleEmailChange.bind(_this);
+			_this.handleEmailVerifiedChange = _this.handleEmailVerifiedChange.bind(_this);
 			return _this;
 		}
 
@@ -20458,14 +20812,26 @@
 				var name = (0, _reactDom.findDOMNode)(this.refs.name).value.trim();
 				var type = (0, _reactDom.findDOMNode)(this.refs.type).value.trim();
 				var email = (0, _reactDom.findDOMNode)(this.refs.email).value.trim();
+				var is_verified = this.state.is_verified;
 
 				var postData = {
 					name: name,
 					type: type,
-					email: email
+					email: email,
+					is_verified: is_verified
 				};
 
 				this.props.saveAccount(postData);
+			}
+		}, {
+			key: 'handleEmailChange',
+			value: function handleEmailChange(e) {
+				if (e.target.value === '') this.setState({ email: e.target.value, is_verified: false });else this.setState({ email: e.target.value });
+			}
+		}, {
+			key: 'handleEmailVerifiedChange',
+			value: function handleEmailVerifiedChange(e) {
+				this.setState({ is_verified: !this.state.is_verified });
 			}
 		}, {
 			key: 'handleCancel',
@@ -20516,7 +20882,12 @@
 								_react2.default.createElement(
 									'div',
 									{ className: 'col-md-9' },
-									_react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'name', id: 'input-name' })
+									_react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'name', id: 'input-name' }),
+									_react2.default.createElement(
+										'small',
+										null,
+										'This field is required.'
+									)
 								)
 							),
 							_react2.default.createElement(
@@ -20557,7 +20928,17 @@
 								_react2.default.createElement(
 									'div',
 									{ className: 'col-md-9' },
-									_react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'email', id: 'input-email' })
+									_react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'email', id: 'input-email', value: this.state.email, onChange: this.handleEmailChange }),
+									_react2.default.createElement(
+										'div',
+										{ className: 'checkbox' },
+										_react2.default.createElement(
+											'label',
+											null,
+											_react2.default.createElement('input', { type: 'checkbox', checked: this.state.is_verified, disabled: this.state.email === '', onChange: this.handleEmailVerifiedChange }),
+											' Set as verified email.'
+										)
+									)
 								)
 							),
 							_react2.default.createElement(
@@ -20586,7 +20967,7 @@
 	exports.default = AddAccountFormComponent;
 
 /***/ },
-/* 165 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -20611,6 +20992,7 @@
 
 	var alertDanger = "alert alert-dismissible alert-danger";
 	var alertSuccess = "alert alert-dismissible alert-success";
+	var alertInfo = "alert alert-dismissible alert-info";
 
 	var ModalMessageComponent = function (_Component) {
 		_inherits(ModalMessageComponent, _Component);
@@ -20634,6 +21016,9 @@
 							break;
 						case 'error':
 							alertClass = alertDanger;
+							break;
+						case 'info':
+							alertClass = alertInfo;
 							break;
 					}
 
@@ -20667,7 +21052,7 @@
 	exports.default = ModalMessageComponent;
 
 /***/ },
-/* 166 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20784,7 +21169,453 @@
 	exports.default = ModalContinueDialogComponent;
 
 /***/ },
-/* 167 */
+/* 168 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _ModalMessageComponent = __webpack_require__(166);
+
+	var _ModalMessageComponent2 = _interopRequireDefault(_ModalMessageComponent);
+
+	var _ModalContinueDialogComponent = __webpack_require__(167);
+
+	var _ModalContinueDialogComponent2 = _interopRequireDefault(_ModalContinueDialogComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DETAILS_URL = '/accounts/details/';
+	var ACCOUNT_URL = '/accounts';
+
+	var ViewAccountForm = function (_Component) {
+		_inherits(ViewAccountForm, _Component);
+
+		function ViewAccountForm(props) {
+			_classCallCheck(this, ViewAccountForm);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ViewAccountForm).call(this, props));
+
+			_this.state = {
+				modalMessage: {
+					status: undefined,
+					message: undefined
+				}
+			};
+
+			_this.handleDeleteClick = _this.handleDeleteClick.bind(_this);
+			_this.handleContinueDelete = _this.handleContinueDelete.bind(_this);
+			return _this;
+		}
+
+		_createClass(ViewAccountForm, [{
+			key: 'handleDeleteClick',
+			value: function handleDeleteClick() {
+				$("#modalDeleteDialog").modal();
+			}
+		}, {
+			key: 'handleContinueDelete',
+			value: function handleContinueDelete() {
+				if (_typeof($(".snackbar").prop('tagName')) !== ( true ? 'undefined' : _typeof(undefined))) {
+					$(".snackbar").snackbar('show');
+				} else {
+					$.snackbar({
+						content: '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Deleting Account...',
+						style: 'snackbar',
+						timeout: 0,
+						htmlAllowed: true
+					});
+				}
+
+				$("#modalDeleteDialog").modal('hide');
+
+				$.ajax({
+					url: '/api/accounts/deleteAccount/' + this.props.id,
+					type: 'POST',
+					dataType: 'json',
+					success: function (response) {
+						$(".snackbar").snackbar('hide');
+						this.setState({
+							modalMessage: {
+								status: response.status,
+								message: response.message
+							}
+						});
+						$("#modalMessage").modal().on('hidden.bs.modal', function () {
+							window.location = ACCOUNT_URL;
+						});
+					}.bind(this),
+					error: function (xhr, status, error) {
+						this.setState({
+							modalMessage: {
+								status: status,
+								message: error
+							}
+						});
+						$("#modalMessage").modal();
+					}.bind(this)
+				});
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					null,
+					_react2.default.createElement(
+						'div',
+						{ className: 'panel panel-default' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-heading' },
+							'Other Options'
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-body' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'row' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-12' },
+									_react2.default.createElement(
+										'button',
+										{ className: 'btn btn-danger btn-raised', onClick: this.handleDeleteClick },
+										'Delete this account'
+									)
+								)
+							)
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'modal fade', id: 'modalDeleteDialog' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'modal-dialog' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'modal-content' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'modal-header' },
+									_react2.default.createElement(
+										'button',
+										{
+											type: 'button',
+											className: 'close',
+											'data-dismiss': 'modal',
+											'aria-hidden': 'true' },
+										'×'
+									),
+									_react2.default.createElement(
+										'h4',
+										{ className: 'modal-title' },
+										'Delete Account?'
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'modal-body' },
+									_react2.default.createElement(
+										'p',
+										null,
+										'Are you sure you want to delete this account?'
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'modal-footer' },
+									_react2.default.createElement(
+										'button',
+										{
+											type: 'button',
+											className: 'btn btn-default',
+											'data-dismiss': 'modal' },
+										'Cancel'
+									),
+									_react2.default.createElement(
+										'button',
+										{
+											type: 'button',
+											className: 'btn btn-danger btn-raised',
+											onClick: this.handleContinueDelete },
+										'Delete'
+									)
+								)
+							)
+						)
+					),
+					_react2.default.createElement(_ModalMessageComponent2.default, {
+						modal: this.state.modalMessage })
+				);
+			}
+		}]);
+
+		return ViewAccountForm;
+	}(_react.Component);
+
+	exports.default = ViewAccountForm;
+
+/***/ },
+/* 169 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _EditAccountFormComponent = __webpack_require__(170);
+
+	var _EditAccountFormComponent2 = _interopRequireDefault(_EditAccountFormComponent);
+
+	var _ModalMessageComponent = __webpack_require__(166);
+
+	var _ModalMessageComponent2 = _interopRequireDefault(_ModalMessageComponent);
+
+	var _ModalContinueDialogComponent = __webpack_require__(167);
+
+	var _ModalContinueDialogComponent2 = _interopRequireDefault(_ModalContinueDialogComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DETAILS_URL = '/accounts/details/';
+
+	var EditAccountForm = function (_Component) {
+		_inherits(EditAccountForm, _Component);
+
+		function EditAccountForm(props) {
+			_classCallCheck(this, EditAccountForm);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EditAccountForm).call(this, props));
+
+			_this.state = {
+				account: undefined,
+				isUpdating: false,
+				modalMessage: {
+					status: undefined,
+					message: undefined
+				},
+				modalContinue: {
+					title: undefined,
+					body: undefined,
+					cancelButton: undefined,
+					continueButton: undefined,
+					redirectTo: undefined
+				}
+			};
+
+			_this.getAccountDetails = _this.getAccountDetails.bind(_this);
+			_this.updateAccount = _this.updateAccount.bind(_this);
+			_this.showContinueDialog = _this.showContinueDialog.bind(_this);
+			_this.retry = _this.retry.bind(_this);
+
+			_this.getAccountDetails(0);
+			return _this;
+		}
+
+		_createClass(EditAccountForm, [{
+			key: 'retry',
+			value: function retry() {
+				this.setState({ account: undefined });
+				this.getAccountDetails(0);
+			}
+		}, {
+			key: 'showContinueDialog',
+			value: function showContinueDialog(modalContinue) {
+				this.setState({ modalContinue: modalContinue });
+			}
+		}, {
+			key: 'getAccountDetails',
+			value: function getAccountDetails(counter) {
+				$.ajax({
+					url: '/api/accounts/getAccountDetails/' + this.props.id,
+					type: 'POST',
+					dataType: 'json',
+					success: function (account) {
+						this.setState({ account: account });
+					}.bind(this),
+					error: function (xhr, status, error) {
+						if (counter < 5) {
+							this.getAccountDetails(counter + 1);
+						} else {
+							this.setState({ account: status });
+						}
+					}.bind(this)
+				});
+			}
+		}, {
+			key: 'updateAccount',
+			value: function updateAccount(postData) {
+				if (_typeof($(".snackbar").prop('tagName')) !== ( true ? 'undefined' : _typeof(undefined))) {
+					$(".snackbar").snackbar('show');
+				} else {
+					$.snackbar({
+						content: '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Updating...',
+						style: 'snackbar',
+						timeout: 0,
+						htmlAllowed: true
+					});
+				}
+
+				$.each(postData, function (key, value) {
+					$("#fg-" + key).removeClass('has-error');
+					$("#input-" + key).popover('destroy');
+				});
+
+				if (postData.name !== this.state.account.name || postData.type !== this.state.account.type || postData.email !== this.state.account.email || postData.is_verified !== this.state.account.is_verified) {
+					this.setState({ isUpdating: true });
+					$.ajax({
+						url: '/api/accounts/updateAccount',
+						type: 'POST',
+						data: postData,
+						dataType: 'json',
+						success: function (response) {
+							var self = this;
+							this.setState({
+								isUpdating: false,
+								modalMessage: {
+									status: response.status,
+									message: response.message
+								}
+							});
+
+							$(".snackbar").snackbar('hide');
+							$("#modalMessage").modal().on('hidden.bs.modal', function () {
+								window.location = DETAILS_URL + self.props.id + '/view-account';
+							});
+						}.bind(this),
+						error: function (xhr, status, error) {
+							$(".snackbar").snackbar('hide');
+							if (xhr.status === 422) {
+								$.each(xhr.responseJSON, function (key, value) {
+									$("#fg-" + key).addClass('has-error');
+									$("#input-" + key).popover({ trigger: 'hover', content: value, placement: 'top' });
+								});
+								this.setState({ isUpdating: false });
+							} else {
+								this.setState({
+									isUpdating: false,
+									modalMessage: {
+										status: status,
+										message: error
+									}
+								});
+								$("#modalMessage").modal();
+							}
+						}.bind(this)
+					});
+				} else {
+					$(".snackbar").snackbar('hide');
+					this.setState({
+						modalMessage: {
+							status: 'info',
+							message: 'No changes has been made.'
+						}
+					});
+					$("#modalMessage").modal();
+				}
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var component;
+				if (this.state.account === undefined) {
+					component = _react2.default.createElement(
+						'div',
+						{ className: 'col-md-12' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel panel-default' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'panel-body text-center' },
+								_react2.default.createElement('i', { className: 'fa fa-circle-o-notch fa-spin fa-fw' }),
+								' Loading...'
+							)
+						)
+					);
+				} else if (this.state.account === 'error') {
+					component = _react2.default.createElement(
+						'div',
+						{ className: 'col-md-12' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel panel-default' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'panel-body text-center' },
+								_react2.default.createElement('i', { className: 'fa fa-exclamation-triangle fa-fw' }),
+								' Something\'s not right. ',
+								_react2.default.createElement(
+									'a',
+									{ href: 'javascript:void(0)', className: 'btn-xs', onClick: this.retry },
+									'Retry'
+								)
+							)
+						)
+					);
+				} else if (this.state.account !== undefined) {
+					component = _react2.default.createElement(_EditAccountFormComponent2.default, {
+						account: this.state.account,
+						isUpdating: this.state.isUpdating,
+						updateAccount: this.updateAccount,
+						showContinueDialog: this.showContinueDialog });
+				}
+
+				return _react2.default.createElement(
+					'div',
+					{ className: 'row' },
+					component,
+					_react2.default.createElement(_ModalMessageComponent2.default, {
+						modal: this.state.modalMessage }),
+					_react2.default.createElement(_ModalContinueDialogComponent2.default, {
+						modal: this.state.modalContinue })
+				);
+			}
+		}]);
+
+		return EditAccountForm;
+	}(_react.Component);
+
+	exports.default = EditAccountForm;
+
+/***/ },
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20799,9 +21630,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _ViewAccountDetailsComponent = __webpack_require__(168);
-
-	var _ViewAccountDetailsComponent2 = _interopRequireDefault(_ViewAccountDetailsComponent);
+	var _reactDom = __webpack_require__(158);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20811,128 +21640,418 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var ViewAccountForm = function (_Component) {
-		_inherits(ViewAccountForm, _Component);
+	var ACCOUNT_URL = '/accounts/details';
 
-		function ViewAccountForm(props) {
-			_classCallCheck(this, ViewAccountForm);
+	var EditAccountFormComponent = function (_Component) {
+		_inherits(EditAccountFormComponent, _Component);
 
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ViewAccountForm).call(this, props));
+		function EditAccountFormComponent(props) {
+			_classCallCheck(this, EditAccountFormComponent);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EditAccountFormComponent).call(this, props));
 
 			_this.state = {
-				account: undefined,
-				viewMode: 'account'
+				name: _this.props.account.name,
+				type: _this.props.account.type,
+				email: _this.props.account.email,
+				is_verified: _this.props.account.is_verified
 			};
 
-			_this.getAccountDetails = _this.getAccountDetails.bind(_this);
-			_this.getAccountDetails(0);
+			_this.handleSubmit = _this.handleSubmit.bind(_this);
+			_this.handleCancel = _this.handleCancel.bind(_this);
+
+			_this.handleNameChange = _this.handleNameChange.bind(_this);
+			_this.handleTypeChange = _this.handleTypeChange.bind(_this);
+			_this.handleEmailChange = _this.handleEmailChange.bind(_this);
+			_this.handleEmailVerifiedChange = _this.handleEmailVerifiedChange.bind(_this);
 			return _this;
 		}
 
-		_createClass(ViewAccountForm, [{
-			key: 'getAccountDetails',
-			value: function getAccountDetails(counter) {
-				$.ajax({
-					url: '/api/accounts/getAccountDetails/' + this.props.id,
-					type: 'POST',
-					dataType: 'json',
-					success: function (account) {
-						this.setState({ account: account });
-					}.bind(this),
-					error: function (xhr, status, error) {
-						if (counter < 3) {
-							this.getAccountDetails(counter + 1);
-						} else {}
-					}.bind(this)
-				});
+		_createClass(EditAccountFormComponent, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				$.material.init();
+			}
+		}, {
+			key: 'handleNameChange',
+			value: function handleNameChange(e) {
+				this.setState({ name: e.target.value });
+			}
+		}, {
+			key: 'handleTypeChange',
+			value: function handleTypeChange(e) {
+				this.setState({ type: e.target.value });
+			}
+		}, {
+			key: 'handleEmailChange',
+			value: function handleEmailChange(e) {
+				this.setState({ email: e.target.value });
+			}
+		}, {
+			key: 'handleEmailVerifiedChange',
+			value: function handleEmailVerifiedChange() {
+				this.setState({ is_verified: !this.state.is_verified });
+			}
+		}, {
+			key: 'handleSubmit',
+			value: function handleSubmit(e) {
+				e.preventDefault();
+				var name = (0, _reactDom.findDOMNode)(this.refs.name).value.trim();
+				var type = (0, _reactDom.findDOMNode)(this.refs.type).value.trim();
+				var email = (0, _reactDom.findDOMNode)(this.refs.email).value.trim();
+
+				var postData = {
+					id: this.props.account.id,
+					name: name,
+					type: type,
+					email: email,
+					is_verified: this.state.is_verified
+				};
+
+				this.props.updateAccount(postData);
+			}
+		}, {
+			key: 'handleCancel',
+			value: function handleCancel() {
+				var name = (0, _reactDom.findDOMNode)(this.refs.name).value.trim();
+				var type = (0, _reactDom.findDOMNode)(this.refs.type).value.trim();
+				var email = (0, _reactDom.findDOMNode)(this.refs.email).value.trim();
+
+				if (name !== this.props.account.name || type !== this.props.account.type || email !== this.props.account.email) {
+					this.props.showContinueDialog({
+						title: 'Discard Changes?',
+						body: 'If you go back now, your entry will be discarded.',
+						cancelButton: undefined,
+						continueButton: 'Discard',
+						redirectTo: ACCOUNT_URL + '/' + this.props.account.id + '/view-account'
+					});
+					$("#modalContinueDialog").modal();
+				} else {
+					window.location = ACCOUNT_URL + '/' + this.props.account.id + '/view-account';
+				}
 			}
 		}, {
 			key: 'render',
 			value: function render() {
-				var account = this.state.account;
-				var viewMode = this.state.viewMode;
-				var view;
-				switch (viewMode) {
-					case 'account':
-						view = _react2.default.createElement(_ViewAccountDetailsComponent2.default, null);
-						break;
-				}
+				var isUpdating = this.props.isUpdating;
 				return _react2.default.createElement(
 					'div',
-					{ className: 'panel panel-default' },
+					{ className: 'col-md-8 col-md-offset-2' },
 					_react2.default.createElement(
-						'div',
-						{ className: 'panel-body' },
+						'form',
+						{ className: 'form-horizontal', onSubmit: this.handleSubmit },
 						_react2.default.createElement(
-							'div',
-							{ className: 'page-header' },
+							'fieldset',
+							null,
 							_react2.default.createElement(
-								'h2',
+								'legend',
 								null,
-								account === undefined ? ' ' : account.name
+								'Account Details'
 							),
 							_react2.default.createElement(
-								'small',
-								null,
+								'div',
+								{ className: 'form-group', id: 'fg-name' },
 								_react2.default.createElement(
-									'strong',
-									null,
-									'Account ID:'
+									'label',
+									{ className: 'col-md-3 control-label', htmlFor: 'input-name' },
+									'Account Name'
 								),
-								' ',
-								account === undefined ? ' ' : account.id
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'col-md-3' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-9' },
+									_react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'name', id: 'input-name', value: this.state.name, onChange: this.handleNameChange })
+								)
+							),
 							_react2.default.createElement(
 								'div',
-								{ className: 'form-group' },
+								{ className: 'form-group', id: 'fg-type' },
 								_react2.default.createElement(
-									'ul',
-									{ className: 'nav nav-pills nav-stacked' },
+									'label',
+									{ className: 'col-md-3 control-label', htmlFor: 'input-type' },
+									'Account Type'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-9' },
 									_react2.default.createElement(
-										'li',
-										{ className: 'active' },
+										'select',
+										{ className: 'form-control', ref: 'type', id: 'input-type', value: this.state.type, onChange: this.handleTypeChange },
 										_react2.default.createElement(
-											'a',
-											{ href: 'javascript:void(0)' },
-											'Account Details'
-										)
-									),
-									_react2.default.createElement(
-										'li',
-										null,
+											'option',
+											{ value: 'Individual Account' },
+											'Individual Account'
+										),
 										_react2.default.createElement(
-											'a',
-											{ href: 'javascript:void(0)' },
-											'Investment Details'
+											'option',
+											{ value: 'Joint Account' },
+											'Joint Account'
 										)
 									)
 								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group', id: 'fg-email' },
+								_react2.default.createElement(
+									'label',
+									{ className: 'col-md-3 control-label', htmlFor: 'input-email' },
+									'Email Address'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-9' },
+									_react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'email', id: 'input-email', value: this.state.email, onChange: this.handleEmailChange }),
+									_react2.default.createElement(
+										'div',
+										{ className: 'checkbox' },
+										_react2.default.createElement(
+											'label',
+											null,
+											_react2.default.createElement('input', { type: 'checkbox', checked: this.state.is_verified, disabled: this.state.email === '' || this.state.email === null, onChange: this.handleEmailVerifiedChange }),
+											' Set as verified email.'
+										)
+									)
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'pull-right' },
+								_react2.default.createElement(
+									'button',
+									{ type: 'button', className: 'btn btn-default', disabled: isUpdating, onClick: this.handleCancel },
+									'Cancel'
+								),
+								_react2.default.createElement(
+									'button',
+									{ type: 'submit', className: 'btn btn-primary btn-raised', disabled: isUpdating },
+									'Update'
+								)
 							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'col-md-9' },
-							view
 						)
 					)
 				);
 			}
 		}]);
 
-		return ViewAccountForm;
+		return EditAccountFormComponent;
 	}(_react.Component);
 
-	exports.default = ViewAccountForm;
+	exports.default = EditAccountFormComponent;
 
 /***/ },
-/* 168 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _EditUserFormComponent = __webpack_require__(172);
+
+	var _EditUserFormComponent2 = _interopRequireDefault(_EditUserFormComponent);
+
+	var _ModalMessageComponent = __webpack_require__(166);
+
+	var _ModalMessageComponent2 = _interopRequireDefault(_ModalMessageComponent);
+
+	var _ModalContinueDialogComponent = __webpack_require__(167);
+
+	var _ModalContinueDialogComponent2 = _interopRequireDefault(_ModalContinueDialogComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DETAILS_URL = '/accounts/details/';
+
+	var EditUserForm = function (_Component) {
+		_inherits(EditUserForm, _Component);
+
+		function EditUserForm(props) {
+			_classCallCheck(this, EditUserForm);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EditUserForm).call(this, props));
+
+			_this.state = {
+				user: undefined,
+				isUpdating: false,
+				modalMessage: {
+					status: undefined,
+					message: undefined
+				},
+				modalContinue: {
+					title: undefined,
+					body: undefined,
+					cancelButton: undefined,
+					continueButton: undefined,
+					redirectTo: undefined
+				}
+			};
+
+			_this.getInvestorUserDetails = _this.getInvestorUserDetails.bind(_this);
+			_this.showContinueDialog = _this.showContinueDialog.bind(_this);
+			_this.updateUser = _this.updateUser.bind(_this);
+
+			_this.getInvestorUserDetails(0);
+			return _this;
+		}
+
+		_createClass(EditUserForm, [{
+			key: 'getInvestorUserDetails',
+			value: function getInvestorUserDetails(counter) {
+				$.ajax({
+					url: '/api/accounts/getInvestorUserDetails/' + this.props.id,
+					type: 'POST',
+					dataType: 'json',
+					success: function (user) {
+						this.setState({ user: user });
+					}.bind(this),
+					error: function (xhr, status, error) {
+						if (counter < 3) {
+							this.getUserDetails(counter + 1);
+						} else {}
+					}.bind(this)
+				});
+			}
+		}, {
+			key: 'showContinueDialog',
+			value: function showContinueDialog(modalContinue) {
+				this.setState({ modalContinue: modalContinue });
+			}
+		}, {
+			key: 'updateUser',
+			value: function updateUser(postData) {
+				if (_typeof($(".snackbar").prop('tagName')) !== ( true ? 'undefined' : _typeof(undefined))) {
+					$(".snackbar").snackbar('show');
+				} else {
+					$.snackbar({
+						content: '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Updating...',
+						style: 'snackbar',
+						timeout: 0,
+						htmlAllowed: true
+					});
+				}
+
+				$.each(postData, function (key, value) {
+					$("#fg-" + key).removeClass('has-error');
+					$("#input-" + key).popover('destroy');
+				});
+
+				if (postData.name !== this.state.user.name && postData.name !== null || postData.name !== '' || postData.username !== this.state.user.username && postData.username !== '' && postData.username !== null || postData.password !== '' && postData.password !== null || postData.newPassword !== null && postData.newPassword !== '' || postData.is_active !== this.state.user.is_active) {
+					postData.id = this.props.id;
+					this.setState({ isUpdating: true });
+					$.ajax({
+						url: '/api/accounts/updateUser',
+						type: 'POST',
+						data: postData,
+						dataType: 'json',
+						success: function (response) {
+							var self = this;
+							this.setState({
+								isUpdating: false,
+								modalMessage: {
+									status: response.status,
+									message: response.message
+								}
+							});
+
+							$(".snackbar").snackbar('hide');
+							$("#modalMessage").modal().on('hidden.bs.modal', function () {
+								window.location = DETAILS_URL + self.props.id + '/view-account';
+							});
+						}.bind(this),
+						error: function (xhr, status, error) {
+							$(".snackbar").snackbar('hide');
+							if (xhr.status === 422) {
+								$.each(xhr.responseJSON, function (key, value) {
+									$("#fg-" + key).addClass('has-error');
+									$("#input-" + key).popover({ trigger: 'hover', content: value, placement: 'top' });
+								});
+								this.setState({ isUpdating: false });
+							} else {
+								this.setState({
+									isUpdating: false,
+									modalMessage: {
+										status: status,
+										message: error
+									}
+								});
+								$("#modalMessage").modal();
+							}
+						}.bind(this)
+					});
+				} else {
+					$(".snackbar").snackbar('hide');
+					this.setState({
+						modalMessage: {
+							status: 'info',
+							message: 'No changes has been made.'
+						}
+					});
+					$("#modalMessage").modal();
+				}
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var component = _react2.default.createElement(
+					'div',
+					{ className: 'col-md-12' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'panel panel-default' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-body text-center' },
+							_react2.default.createElement('i', { className: 'fa fa-circle-o-notch fa-spin fa-fw' }),
+							' Loading...'
+						)
+					)
+				);
+
+				if (this.state.user !== undefined) {
+					component = _react2.default.createElement(_EditUserFormComponent2.default, {
+						user: this.state.user,
+						account_id: this.props.id,
+						updateUser: this.updateUser,
+						showContinueDialog: this.showContinueDialog });
+				}
+				return _react2.default.createElement(
+					'div',
+					{ className: 'row' },
+					component,
+					_react2.default.createElement(_ModalMessageComponent2.default, {
+						modal: this.state.modalMessage }),
+					_react2.default.createElement(_ModalContinueDialogComponent2.default, {
+						modal: this.state.modalContinue })
+				);
+			}
+		}]);
+
+		return EditUserForm;
+	}(_react.Component);
+
+	exports.default = EditUserForm;
+
+/***/ },
+/* 172 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -20944,6 +22063,8 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactDom = __webpack_require__(158);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -20952,68 +22073,1105 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var ViewAccountDetailsComponent = function (_Component) {
-		_inherits(ViewAccountDetailsComponent, _Component);
+	var ACCOUNT_URL = '/accounts/details';
 
-		function ViewAccountDetailsComponent(props) {
-			_classCallCheck(this, ViewAccountDetailsComponent);
+	var EditAccountFormComponent = function (_Component) {
+		_inherits(EditAccountFormComponent, _Component);
 
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(ViewAccountDetailsComponent).call(this, props));
+		function EditAccountFormComponent(props) {
+			_classCallCheck(this, EditAccountFormComponent);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EditAccountFormComponent).call(this, props));
+
+			_this.state = {
+				name: _this.props.user.name,
+				username: _this.props.user.username,
+				password_changed_at: _this.props.user.password_changed_at,
+				newPassword: '',
+				repeatNewPassword: '',
+				is_active: _this.props.user.is_active == 1 ? true : false
+			};
+
+			_this.handleNameChange = _this.handleNameChange.bind(_this);
+			_this.handleSubmit = _this.handleSubmit.bind(_this);
+			_this.handleUsernameChange = _this.handleUsernameChange.bind(_this);
+			_this.handleNewPasswordChange = _this.handleNewPasswordChange.bind(_this);
+			_this.handleRepeatNewPasswordChange = _this.handleRepeatNewPasswordChange.bind(_this);
+			_this.handleIsActiveChange = _this.handleIsActiveChange.bind(_this);
+			_this.handleCancel = _this.handleCancel.bind(_this);
+			return _this;
 		}
 
-		_createClass(ViewAccountDetailsComponent, [{
-			key: "render",
+		_createClass(EditAccountFormComponent, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				$.material.init();
+			}
+		}, {
+			key: 'handleNameChange',
+			value: function handleNameChange(e) {
+				this.setState({ name: e.target.value });
+			}
+		}, {
+			key: 'handleUsernameChange',
+			value: function handleUsernameChange(e) {
+				this.setState({ username: e.target.value });
+			}
+		}, {
+			key: 'handleNewPasswordChange',
+			value: function handleNewPasswordChange(e) {
+				this.setState({ newPassword: e.target.value });
+			}
+		}, {
+			key: 'handleRepeatNewPasswordChange',
+			value: function handleRepeatNewPasswordChange(e) {
+				this.setState({ repeatNewPassword: e.target.value });
+			}
+		}, {
+			key: 'handleIsActiveChange',
+			value: function handleIsActiveChange(e) {
+				this.setState({ is_active: !this.state.is_active });
+			}
+		}, {
+			key: 'handleCancel',
+			value: function handleCancel() {
+				var name = (0, _reactDom.findDOMNode)(this.refs.name).value.trim();
+				var username = (0, _reactDom.findDOMNode)(this.refs.username).value.trim();
+				var newPassword = (0, _reactDom.findDOMNode)(this.refs.newPassword).value;
+				var repeatNewPassword = (0, _reactDom.findDOMNode)(this.refs.repeatNewPassword).value;
+				var is_active = (0, _reactDom.findDOMNode)(this.refs.is_active).value;
+
+				if (name !== this.props.user.name || username !== this.props.user.username || newPassword !== '' || is_active !== this.props.user.is_active) {
+					this.props.showContinueDialog({
+						title: 'Discard Changes?',
+						body: 'If you go back now, your entry will be discarded.',
+						cancelButton: undefined,
+						continueButton: 'Discard',
+						redirectTo: ACCOUNT_URL + '/' + this.props.account_id + '/view-account'
+					});
+					$("#modalContinueDialog").modal();
+				} else {
+					window.location = ACCOUNT_URL + '/' + this.props.account_id + '/view-account';
+				}
+			}
+		}, {
+			key: 'handleSubmit',
+			value: function handleSubmit(e) {
+				e.preventDefault();
+				var name = (0, _reactDom.findDOMNode)(this.refs.name).value.trim();
+				var username = (0, _reactDom.findDOMNode)(this.refs.username).value.trim();
+				var newPassword = (0, _reactDom.findDOMNode)(this.refs.newPassword).value;
+				var repeatNewPassword = (0, _reactDom.findDOMNode)(this.refs.repeatNewPassword).value;
+				var is_active = this.state.is_active;
+
+				var postData = {
+					name: name,
+					username: username,
+					newPassword: newPassword,
+					repeatNewPassword: repeatNewPassword,
+					is_active: is_active
+				};
+
+				this.props.updateUser(postData);
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var isUpdating = this.props.isUpdating;
+				return _react2.default.createElement(
+					'div',
+					{ className: 'col-md-8 col-md-offset-2' },
+					_react2.default.createElement(
+						'h3',
+						null,
+						'User Details'
+					),
+					_react2.default.createElement(
+						'form',
+						{ className: 'form-horizontal', onSubmit: this.handleSubmit },
+						_react2.default.createElement(
+							'fieldset',
+							null,
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group', id: 'fg-name' },
+								_react2.default.createElement(
+									'label',
+									{ className: 'col-md-4 control-label', htmlFor: 'input-name' },
+									'Display Name'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-8' },
+									_react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'name', id: 'input-name', value: this.state.name, onChange: this.handleNameChange })
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group', id: 'fg-username' },
+								_react2.default.createElement(
+									'label',
+									{ className: 'col-md-4 control-label', htmlFor: 'input-username' },
+									'Username'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-8' },
+									_react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'username', id: 'input-username', value: this.state.username, placeholder: 'Enter Username', onChange: this.handleUsernameChange })
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group', id: 'fg-newPassword' },
+								_react2.default.createElement(
+									'label',
+									{ className: 'col-md-4 control-label', htmlFor: 'input-newPassword' },
+									'New Password'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-8' },
+									_react2.default.createElement('input', { type: 'password', className: 'form-control', ref: 'newPassword', id: 'input-newPassword', placeholder: 'Enter new password', onChange: this.handleNewPasswordChange })
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group', id: 'fg-repeatNewPassword' },
+								_react2.default.createElement(
+									'label',
+									{ className: 'col-md-4 control-label', htmlFor: 'input-repeatNewPassword' },
+									'Repeat New Password'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-8' },
+									_react2.default.createElement('input', { type: 'password', className: 'form-control', ref: 'repeatNewPassword', id: 'input-repeatNewPassword', placeholder: 'Re-enter new password', onChange: this.handleRepeatNewPasswordChange })
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-8 col-md-offset-4 togglebutton' },
+									_react2.default.createElement(
+										'label',
+										null,
+										_react2.default.createElement('input', { type: 'checkbox', checked: this.state.is_active, ref: 'is_active', onChange: this.handleIsActiveChange }),
+										' Set as Active'
+									)
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'pull-right' },
+								_react2.default.createElement(
+									'button',
+									{ type: 'button', className: 'btn btn-default', disabled: isUpdating, onClick: this.handleCancel },
+									'Cancel'
+								),
+								_react2.default.createElement(
+									'button',
+									{ type: 'submit', className: 'btn btn-primary btn-raised', disabled: isUpdating },
+									'Save Changes'
+								)
+							)
+						)
+					)
+				);
+			}
+		}]);
+
+		return EditAccountFormComponent;
+	}(_react.Component);
+
+	exports.default = EditAccountFormComponent;
+
+/***/ },
+/* 173 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _AddTransactionFormComponent = __webpack_require__(174);
+
+	var _AddTransactionFormComponent2 = _interopRequireDefault(_AddTransactionFormComponent);
+
+	var _ModalMessageComponent = __webpack_require__(166);
+
+	var _ModalMessageComponent2 = _interopRequireDefault(_ModalMessageComponent);
+
+	var _ModalContinueDialogComponent = __webpack_require__(167);
+
+	var _ModalContinueDialogComponent2 = _interopRequireDefault(_ModalContinueDialogComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ACCOUNT_URL = '/accounts/details/';
+
+	var AddTransactionForm = function (_Component) {
+		_inherits(AddTransactionForm, _Component);
+
+		function AddTransactionForm(props) {
+			_classCallCheck(this, AddTransactionForm);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AddTransactionForm).call(this, props));
+
+			_this.state = {
+				isSaving: false,
+				modalMessage: {
+					status: undefined,
+					message: undefined
+				},
+				modalContinue: {
+					title: undefined,
+					body: undefined,
+					cancelButton: undefined,
+					continueButton: undefined,
+					redirectTo: undefined
+				}
+			};
+
+			_this.showContinueDialog = _this.showContinueDialog.bind(_this);
+			_this.saveTransaction = _this.saveTransaction.bind(_this);
+			return _this;
+		}
+
+		_createClass(AddTransactionForm, [{
+			key: 'showContinueDialog',
+			value: function showContinueDialog(modalContinue) {
+				this.setState({ modalContinue: modalContinue });
+			}
+		}, {
+			key: 'saveTransaction',
+			value: function saveTransaction(postData) {
+				if (_typeof($(".snackbar").prop('tagName')) !== ( true ? 'undefined' : _typeof(undefined))) {
+					$(".snackbar").snackbar('show');
+				} else {
+					$.snackbar({
+						content: '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Saving...',
+						style: 'snackbar',
+						timeout: 0,
+						htmlAllowed: true
+					});
+				}
+
+				postData.id = this.props.id;
+
+				$.each(postData, function (key, value) {
+					$("#fg-" + key).removeClass('has-error');
+					$("#input-" + key).popover('destroy');
+				});
+
+				this.setState({ isSaving: true });
+
+				$.ajax({
+					url: '/api/transactions/saveTransaction',
+					type: 'POST',
+					data: postData,
+					dataType: 'json',
+					success: function (response) {
+						var self = this;
+						this.setState({
+							isSaving: false,
+							modalMessage: {
+								status: response.status,
+								message: response.message
+							}
+						});
+
+						$(".snackbar").snackbar('hide');
+						$("#modalMessage").modal().on('hidden.bs.modal', function () {
+							window.location = ACCOUNT_URL + self.props.id + '/view-soa';
+						});
+					}.bind(this),
+					error: function (xhr, status, error) {
+						$(".snackbar").snackbar('hide');
+						if (xhr.status === 422) {
+							$("#InvestmentMessageContainerModal").modal('hide');
+							$.each(xhr.responseJSON, function (key, value) {
+								$("#fg-" + key).addClass('has-error');
+								$("#input-" + key).popover({ trigger: 'hover', content: value, placement: 'top' });
+							});
+							this.setState({ isSaving: false });
+						} else {
+							this.setState({
+								isSaving: false,
+								modalMessage: {
+									status: status,
+									message: error
+								}
+							});
+							$("#modalMessage").modal();
+						}
+					}.bind(this)
+				});
+			}
+		}, {
+			key: 'render',
 			value: function render() {
 				return _react2.default.createElement(
-					"div",
-					{ className: "form-group" },
+					'div',
+					{ className: 'row' },
+					_react2.default.createElement(_AddTransactionFormComponent2.default, {
+						showContinueDialog: this.showContinueDialog,
+						saveTransaction: this.saveTransaction,
+						accountId: this.props.id,
+						isSaving: this.state.isSaving }),
+					_react2.default.createElement(_ModalMessageComponent2.default, {
+						modal: this.state.modalMessage }),
+					_react2.default.createElement(_ModalContinueDialogComponent2.default, {
+						modal: this.state.modalContinue })
+				);
+			}
+		}]);
+
+		return AddTransactionForm;
+	}(_react.Component);
+
+	exports.default = AddTransactionForm;
+
+/***/ },
+/* 174 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(158);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ACCOUNT_URL = '/accounts/details/';
+
+	var AddTransactionFormComponent = function (_Component) {
+		_inherits(AddTransactionFormComponent, _Component);
+
+		function AddTransactionFormComponent(props) {
+			_classCallCheck(this, AddTransactionFormComponent);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AddTransactionFormComponent).call(this, props));
+
+			_this.state = {
+				types: undefined,
+				amount: accounting.formatMoney(0, 'Php ')
+			};
+
+			_this.getTransactionTypes = _this.getTransactionTypes.bind(_this);
+
+			_this.amountChanged = _this.amountChanged.bind(_this);
+			_this.amountFocused = _this.amountFocused.bind(_this);
+			_this.amountBlurred = _this.amountBlurred.bind(_this);
+
+			_this.handleCancel = _this.handleCancel.bind(_this);
+			_this.handleSubmit = _this.handleSubmit.bind(_this);
+
+			_this.getTransactionTypes(0);
+			return _this;
+		}
+
+		_createClass(AddTransactionFormComponent, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				$('#input-date').bootstrapMaterialDatePicker({
+					time: false,
+					format: 'DD MMMM YYYY'
+				});
+			}
+		}, {
+			key: 'getTransactionTypes',
+			value: function getTransactionTypes(counter) {
+				$.ajax({
+					url: '/api/transactions/getTransactionTypes',
+					type: 'POST',
+					dataType: 'json',
+					cache: false,
+					success: function (types) {
+						this.setState({ types: types });
+					}.bind(this),
+					error: function (xhr, status, error) {
+						if (counter <= 3) this.getTransactionTypes(counter + 1);else this.setState({ types: status });
+					}.bind(this)
+				});
+			}
+		}, {
+			key: 'amountChanged',
+			value: function amountChanged(e) {
+				this.setState({ amount: e.target.value });
+			}
+		}, {
+			key: 'amountFocused',
+			value: function amountFocused() {
+				this.setState({ amount: accounting.unformat(this.state.amount) });
+			}
+		}, {
+			key: 'amountBlurred',
+			value: function amountBlurred() {
+				this.setState({ amount: accounting.formatMoney(this.state.amount, 'Php ') });
+			}
+		}, {
+			key: 'handleCancel',
+			value: function handleCancel() {
+				this.props.showContinueDialog({
+					title: 'Discard Changes?',
+					body: 'If you go back now, your entry will be discarded.',
+					cancelButton: undefined,
+					continueButton: 'Discard',
+					redirectTo: ACCOUNT_URL + this.props.accountId + '/view-soa'
+				});
+				$("#modalContinueDialog").modal();
+			}
+		}, {
+			key: 'handleSubmit',
+			value: function handleSubmit(e) {
+				e.preventDefault();
+				var type = (0, _reactDom.findDOMNode)(this.refs.type).value;
+				var date = moment((0, _reactDom.findDOMNode)(this.refs.date).value).format('YYYY-MM-DD');
+				var amount = accounting.unformat((0, _reactDom.findDOMNode)(this.refs.amount).value);
+				var notes = (0, _reactDom.findDOMNode)(this.refs.notes).value;
+
+				var postData = {
+					type: type,
+					date: date,
+					amount: amount,
+					notes: notes
+				};
+
+				this.props.saveTransaction(postData);
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var types = this.state.types;
+				var isSaving = this.props.isSaving;
+				var typeOptions;
+				if (types === undefined) {
+					typeOptions = _react2.default.createElement(
+						'option',
+						null,
+						'Loading... Please wait.'
+					);
+				} else if (types.length > 0) {
+					typeOptions = types.map(function (type, index) {
+						return _react2.default.createElement(
+							'option',
+							{ key: index, value: type.code },
+							type.description
+						);
+					});
+				}
+				return _react2.default.createElement(
+					'div',
+					{ className: 'col-md-8 col-md-offset-2' },
 					_react2.default.createElement(
-						"div",
-						{ className: "panel panel-default" },
+						'form',
+						{ className: 'form-horizontal', onSubmit: this.handleSubmit },
 						_react2.default.createElement(
-							"div",
-							{ className: "panel-heading" },
-							"Account Details"
-						),
-						_react2.default.createElement(
-							"div",
-							{ className: "panel-body" },
+							'fieldset',
+							null,
 							_react2.default.createElement(
-								"div",
-								{ className: "form-horizontal" },
+								'legend',
+								null,
+								'Transaction Details'
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group', id: 'fg-type' },
 								_react2.default.createElement(
-									"div",
-									{ className: "form-group" },
+									'label',
+									{ className: 'col-md-3 control-label', htmlFor: 'input-type' },
+									'Transaction Type'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-9' },
 									_react2.default.createElement(
-										"label",
-										{ className: "col-md-3 control-label" },
-										"Account Name"
+										'select',
+										{ className: 'form-control', ref: 'type', id: 'input-type', disabled: types === undefined },
+										typeOptions
+									)
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group', id: 'fg-date' },
+								_react2.default.createElement(
+									'label',
+									{ className: 'col-md-3 control-label', htmlFor: 'input-date' },
+									'Date of Transaction'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-9' },
+									_react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'date', id: 'input-date' })
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group', id: 'fg-amount' },
+								_react2.default.createElement(
+									'label',
+									{ className: 'col-md-3 control-label', htmlFor: 'input-amount' },
+									'Amount'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-9' },
+									_react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'amount', id: 'input-amount', value: this.state.amount, onChange: this.amountChanged, onBlur: this.amountBlurred, onFocus: this.amountFocused })
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group', id: 'fg-notes' },
+								_react2.default.createElement(
+									'label',
+									{ className: 'col-md-3 control-label', htmlFor: 'input-notes' },
+									'Notes'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-9' },
+									_react2.default.createElement('textarea', { className: 'form-control', ref: 'notes', id: 'input-notes' })
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'pull-right' },
+									_react2.default.createElement(
+										'button',
+										{ type: 'button', className: 'btn btn-default', disabled: isSaving, onClick: this.handleCancel },
+										'Cancel'
 									),
 									_react2.default.createElement(
-										"div",
-										{ className: "col-md-8" },
+										'button',
+										{ type: 'submit', className: 'btn btn-raised btn-primary', disabled: isSaving },
+										'Save'
+									)
+								)
+							)
+						)
+					)
+				);
+			}
+		}]);
+
+		return AddTransactionFormComponent;
+	}(_react.Component);
+
+	exports.default = AddTransactionFormComponent;
+
+/***/ },
+/* 175 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _ViewTransactionFormComponent = __webpack_require__(176);
+
+	var _ViewTransactionFormComponent2 = _interopRequireDefault(_ViewTransactionFormComponent);
+
+	var _EditTransactionFormComponent = __webpack_require__(177);
+
+	var _EditTransactionFormComponent2 = _interopRequireDefault(_EditTransactionFormComponent);
+
+	var _ModalMessageComponent = __webpack_require__(166);
+
+	var _ModalMessageComponent2 = _interopRequireDefault(_ModalMessageComponent);
+
+	var _ModalContinueDialogComponent = __webpack_require__(167);
+
+	var _ModalContinueDialogComponent2 = _interopRequireDefault(_ModalContinueDialogComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var SOA_URL = '/accounts/details/';
+
+	var ViewTransactionForm = function (_Component) {
+		_inherits(ViewTransactionForm, _Component);
+
+		function ViewTransactionForm(props) {
+			_classCallCheck(this, ViewTransactionForm);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ViewTransactionForm).call(this, props));
+
+			_this.state = {
+				transaction: undefined,
+				editMode: false,
+				isUpdating: false,
+				modalMessage: {
+					status: undefined,
+					message: undefined
+				}
+			};
+
+			_this.getTransactionDetails = _this.getTransactionDetails.bind(_this);
+			_this.editButtonClicked = _this.editButtonClicked.bind(_this);
+			_this.updateTransaction = _this.updateTransaction.bind(_this);
+			_this.handleDeleteClick = _this.handleDeleteClick.bind(_this);
+			_this.handleContinueDelete = _this.handleContinueDelete.bind(_this);
+
+			_this.getTransactionDetails(0);
+			return _this;
+		}
+
+		_createClass(ViewTransactionForm, [{
+			key: 'getTransactionDetails',
+			value: function getTransactionDetails(counter) {
+				$.ajax({
+					url: '/api/transactions/getTransactionDetails/' + this.props.trans_id,
+					type: 'POST',
+					dataType: 'json',
+					cache: false,
+					success: function (transaction) {
+						this.setState({ transaction: transaction });
+					}.bind(this),
+					error: function (xhr, status, error) {
+						if (counter >= 5) {
+							this.setState({ transaction: status });
+						} else {
+							this.getTransactionDetails(counter + 1);
+						}
+					}.bind(this)
+				});
+			}
+		}, {
+			key: 'editButtonClicked',
+			value: function editButtonClicked() {
+				this.setState({ editMode: !this.state.editMode });
+			}
+		}, {
+			key: 'updateTransaction',
+			value: function updateTransaction(postData) {
+				if (_typeof($(".snackbar").prop('tagName')) !== ( true ? 'undefined' : _typeof(undefined))) {
+					$(".snackbar").snackbar('show');
+				} else {
+					$.snackbar({
+						content: '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Updating...',
+						style: 'snackbar',
+						timeout: 0,
+						htmlAllowed: true
+					});
+				}
+
+				postData.id = this.props.trans_id;
+
+				$.each(postData, function (key, value) {
+					$("#fg-" + key).removeClass('has-error');
+					$("#input-" + key).popover('destroy');
+				});
+
+				this.setState({ isUpdating: true });
+
+				$.ajax({
+					url: '/api/transactions/updateTransaction',
+					type: 'POST',
+					data: postData,
+					dataType: 'json',
+					success: function (response) {
+						var self = this;
+						this.setState({
+							isUpdating: false,
+							editMode: false,
+							modalMessage: {
+								status: response.status,
+								message: response.message
+							}
+						});
+						$(".snackbar").snackbar('hide');
+						$("#modalMessage").modal();
+						this.getTransactionDetails(0);
+					}.bind(this),
+					error: function (xhr, status, error) {
+						$(".snackbar").snackbar('hide');
+						this.setState({ isUpdating: false });
+						if (xhr.status === 422) {
+							$("#InvestmentMessageContainerModal").modal('hide');
+							$.each(xhr.responseJSON, function (key, value) {
+								$("#fg-" + key).addClass('has-error');
+								$("#input-" + key).popover({ trigger: 'hover', content: value, placement: 'top' });
+							});
+						} else {
+							this.setState({
+								isSaving: false,
+								modalMessage: {
+									status: status,
+									message: error
+								}
+							});
+							$("#modalMessage").modal();
+						}
+					}.bind(this)
+				});
+			}
+		}, {
+			key: 'handleDeleteClick',
+			value: function handleDeleteClick() {
+				$("#modalDeleteDialog").modal();
+			}
+		}, {
+			key: 'handleContinueDelete',
+			value: function handleContinueDelete() {
+				if (_typeof($(".snackbar").prop('tagName')) !== ( true ? 'undefined' : _typeof(undefined))) {
+					$(".snackbar").snackbar('show');
+				} else {
+					$.snackbar({
+						content: '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Deleting Transaction...',
+						style: 'snackbar',
+						timeout: 0,
+						htmlAllowed: true
+					});
+				}
+
+				$("#modalDeleteDialog").modal('hide');
+
+				$.ajax({
+					url: '/api/transactions/deleteTransaction/' + this.props.trans_id,
+					type: 'POST',
+					dataType: 'json',
+					success: function (response) {
+						var self = this;
+						$(".snackbar").snackbar('hide');
+						this.setState({
+							modalMessage: {
+								status: response.status,
+								message: response.message
+							}
+						});
+						$("#modalMessage").modal().on('hidden.bs.modal', function () {
+							window.location = SOA_URL + self.props.account_id + '/view-soa';
+						});
+					}.bind(this),
+					error: function (xhr, status, error) {
+						this.setState({
+							modalMessage: {
+								status: status,
+								message: error
+							}
+						});
+						$("#modalMessage").modal();
+					}.bind(this)
+				});
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var view;
+				var transaction = this.state.transaction;
+				if (transaction === undefined) {
+					view = _react2.default.createElement(
+						'div',
+						{ className: 'panel panel-default' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-body text-center' },
+							_react2.default.createElement('i', { className: 'fa fa-circle-o-notch fa-fw fa-spin' }),
+							' Loading Transaction... Please wait.'
+						)
+					);
+				} else if (transaction === 'error') {
+					view = _react2.default.createElement(
+						'div',
+						{ className: 'panel panel-default' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-body text-center' },
+							_react2.default.createElement('i', { className: 'fa fa-exclamation-triangle fa-fw' }),
+							' Something\'s not right. ',
+							_react2.default.createElement(
+								'a',
+								{ href: 'javascript:void(0)', className: 'btn-xs', onClick: this.retry },
+								'Retry'
+							)
+						)
+					);
+				} else {
+					view = _react2.default.createElement(
+						'div',
+						{ className: 'row' },
+						this.state.editMode ? _react2.default.createElement(_EditTransactionFormComponent2.default, {
+							isUpdating: this.state.isUpdating,
+							transaction: transaction,
+							editButtonClicked: this.editButtonClicked,
+							updateTransaction: this.updateTransaction }) : _react2.default.createElement(_ViewTransactionFormComponent2.default, { transaction: transaction })
+					);
+				}
+				return _react2.default.createElement(
+					'div',
+					null,
+					transaction !== undefined && transaction !== 'error' && !this.state.editMode ? _react2.default.createElement(
+						'div',
+						{ className: 'row' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'col-md-12' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'pull-right' },
+								_react2.default.createElement(
+									'button',
+									{ className: 'btn btn-default btn-raised btn-sm', onClick: this.editButtonClicked },
+									'Edit'
+								),
+								_react2.default.createElement(
+									'button',
+									{ className: 'btn btn-danger btn-raised btn-sm', onClick: this.handleDeleteClick },
+									'Delete'
+								)
+							)
+						)
+					) : null,
+					view,
+					_react2.default.createElement(
+						'div',
+						{ className: 'modal fade', id: 'modalDeleteDialog' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'modal-dialog' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'modal-content' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'modal-header' },
+									_react2.default.createElement(
+										'button',
+										{
+											type: 'button',
+											className: 'close',
+											'data-dismiss': 'modal',
+											'aria-hidden': 'true' },
+										'×'
+									),
+									_react2.default.createElement(
+										'h4',
+										{ className: 'modal-title' },
+										'Delete Transaction?'
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'modal-body' },
+									_react2.default.createElement(
+										'p',
+										null,
+										'Are you sure you want to delete this transaction?'
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'modal-footer' },
+									_react2.default.createElement(
+										'button',
+										{
+											type: 'button',
+											className: 'btn btn-default',
+											'data-dismiss': 'modal' },
+										'Cancel'
+									),
+									_react2.default.createElement(
+										'button',
+										{
+											type: 'button',
+											className: 'btn btn-danger btn-raised',
+											onClick: this.handleContinueDelete },
+										'Delete'
+									)
+								)
+							)
+						)
+					),
+					_react2.default.createElement(_ModalMessageComponent2.default, {
+						modal: this.state.modalMessage })
+				);
+			}
+		}]);
+
+		return ViewTransactionForm;
+	}(_react.Component);
+
+	exports.default = ViewTransactionForm;
+
+/***/ },
+/* 176 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(158);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ACCOUNT_URL = '/accounts/details/';
+
+	var AddTransactionFormComponent = function (_Component) {
+		_inherits(AddTransactionFormComponent, _Component);
+
+		function AddTransactionFormComponent(props) {
+			_classCallCheck(this, AddTransactionFormComponent);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(AddTransactionFormComponent).call(this, props));
+		}
+
+		_createClass(AddTransactionFormComponent, [{
+			key: 'render',
+			value: function render() {
+				var transaction = this.props.transaction;
+				return _react2.default.createElement(
+					'div',
+					null,
+					_react2.default.createElement(
+						'div',
+						{ className: 'col-md-10 col-md-offset-1' },
+						_react2.default.createElement(
+							'form',
+							{ className: 'form-horizontal' },
+							_react2.default.createElement(
+								'fieldset',
+								null,
+								_react2.default.createElement(
+									'legend',
+									null,
+									'Transaction Details'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'form-group' },
+									_react2.default.createElement(
+										'label',
+										{ className: 'col-md-3 control-label', htmlFor: 'input-type' },
+										'Transaction Type'
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'col-md-9' },
 										_react2.default.createElement(
-											"p",
-											{ className: "form-control" },
-											"Blah blah"
+											'p',
+											{ className: 'form-control' },
+											transaction.transaction_type.description
 										)
 									)
 								),
 								_react2.default.createElement(
-									"div",
-									{ className: "form-group" },
+									'div',
+									{ className: 'form-group', id: 'fg-date' },
 									_react2.default.createElement(
-										"label",
-										{ className: "col-md-3 control-label" },
-										"Account Type"
+										'label',
+										{ className: 'col-md-3 control-label', htmlFor: 'input-date' },
+										'Date of Transaction'
 									),
 									_react2.default.createElement(
-										"div",
-										{ className: "col-md-8" },
+										'div',
+										{ className: 'col-md-9' },
 										_react2.default.createElement(
-											"p",
-											{ className: "form-control" },
-											"Blah blah"
+											'p',
+											{ className: 'form-control' },
+											moment(transaction.date_transaction).format('DD MMM YYYY')
+										)
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'form-group', id: 'fg-amount' },
+									_react2.default.createElement(
+										'label',
+										{ className: 'col-md-3 control-label', htmlFor: 'input-amount' },
+										'Amount'
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'col-md-9' },
+										_react2.default.createElement(
+											'p',
+											{ className: 'form-control' },
+											accounting.formatMoney(transaction.amount, 'Php ')
+										)
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'form-group', id: 'fg-notes' },
+									_react2.default.createElement(
+										'label',
+										{ className: 'col-md-3 control-label', htmlFor: 'input-notes' },
+										'Notes'
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'col-md-9' },
+										_react2.default.createElement(
+											'p',
+											{ className: 'form-control' },
+											transaction.notes
 										)
 									)
 								)
@@ -21024,10 +23182,252 @@
 			}
 		}]);
 
-		return ViewAccountDetailsComponent;
+		return AddTransactionFormComponent;
 	}(_react.Component);
 
-	exports.default = ViewAccountDetailsComponent;
+	exports.default = AddTransactionFormComponent;
+
+/***/ },
+/* 177 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(158);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ACCOUNT_URL = '/accounts/details/';
+
+	var EditTransactionFormComponent = function (_Component) {
+		_inherits(EditTransactionFormComponent, _Component);
+
+		function EditTransactionFormComponent(props) {
+			_classCallCheck(this, EditTransactionFormComponent);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EditTransactionFormComponent).call(this, props));
+
+			_this.state = {
+				types: undefined,
+				type: _this.props.transaction.transaction_type.code,
+				amount: accounting.formatMoney(_this.props.transaction.amount, 'Php ')
+			};
+
+			_this.getTransactionTypes = _this.getTransactionTypes.bind(_this);
+
+			_this.amountChanged = _this.amountChanged.bind(_this);
+			_this.amountFocused = _this.amountFocused.bind(_this);
+			_this.amountBlurred = _this.amountBlurred.bind(_this);
+
+			_this.handleCancel = _this.handleCancel.bind(_this);
+			_this.handleSubmit = _this.handleSubmit.bind(_this);
+
+			_this.getTransactionTypes(0);
+			return _this;
+		}
+
+		_createClass(EditTransactionFormComponent, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				$('#input-date').bootstrapMaterialDatePicker({
+					time: false,
+					format: 'DD MMMM YYYY'
+				});
+			}
+		}, {
+			key: 'getTransactionTypes',
+			value: function getTransactionTypes(counter) {
+				$.ajax({
+					url: '/api/transactions/getTransactionTypes',
+					type: 'POST',
+					dataType: 'json',
+					cache: false,
+					success: function (types) {
+						this.setState({ types: types });
+					}.bind(this),
+					error: function (xhr, status, error) {
+						if (counter <= 3) this.getTransactionTypes(counter + 1);else this.setState({ types: status });
+					}.bind(this)
+				});
+			}
+		}, {
+			key: 'amountChanged',
+			value: function amountChanged(e) {
+				this.setState({ amount: e.target.value });
+			}
+		}, {
+			key: 'amountFocused',
+			value: function amountFocused() {
+				this.setState({ amount: accounting.unformat(this.state.amount) });
+			}
+		}, {
+			key: 'amountBlurred',
+			value: function amountBlurred() {
+				this.setState({ amount: accounting.formatMoney(this.state.amount, 'Php ') });
+			}
+		}, {
+			key: 'handleCancel',
+			value: function handleCancel() {
+				this.props.editButtonClicked();
+			}
+		}, {
+			key: 'handleSubmit',
+			value: function handleSubmit(e) {
+				e.preventDefault();
+				var type = (0, _reactDom.findDOMNode)(this.refs.type).value;
+				var date = moment((0, _reactDom.findDOMNode)(this.refs.date).value).format('YYYY-MM-DD');
+				var amount = accounting.unformat((0, _reactDom.findDOMNode)(this.refs.amount).value);
+				var notes = (0, _reactDom.findDOMNode)(this.refs.notes).value;
+
+				var postData = {
+					type: type,
+					date: date,
+					amount: amount,
+					notes: notes
+				};
+
+				this.props.updateTransaction(postData);
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var types = this.state.types;
+				var isUpdating = this.props.isUpdating;
+				var transaction = this.props.transaction;
+				var typeOptions;
+				if (types === undefined) {
+					typeOptions = _react2.default.createElement(
+						'option',
+						null,
+						'Loading... Please wait.'
+					);
+				} else if (types.length > 0) {
+					typeOptions = types.map(function (type, index) {
+						return _react2.default.createElement(
+							'option',
+							{ key: index, value: type.code },
+							type.description
+						);
+					});
+				}
+				return _react2.default.createElement(
+					'div',
+					{ className: 'col-md-8 col-md-offset-2' },
+					_react2.default.createElement(
+						'form',
+						{ className: 'form-horizontal', onSubmit: this.handleSubmit },
+						_react2.default.createElement(
+							'fieldset',
+							null,
+							_react2.default.createElement(
+								'legend',
+								null,
+								'Transaction Details'
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group', id: 'fg-type' },
+								_react2.default.createElement(
+									'label',
+									{ className: 'col-md-3 control-label', htmlFor: 'input-type' },
+									'Transaction Type'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-9' },
+									_react2.default.createElement(
+										'select',
+										{ className: 'form-control', ref: 'type', id: 'input-type', disabled: types === undefined, defaultValue: transaction.transaction_type.code },
+										typeOptions
+									)
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group', id: 'fg-date' },
+								_react2.default.createElement(
+									'label',
+									{ className: 'col-md-3 control-label', htmlFor: 'input-date' },
+									'Date of Transaction'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-9' },
+									_react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'date', id: 'input-date', defaultValue: moment(transaction.date_transaction).format('DD MMM YYYY') })
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group', id: 'fg-amount' },
+								_react2.default.createElement(
+									'label',
+									{ className: 'col-md-3 control-label', htmlFor: 'input-amount' },
+									'Amount'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-9' },
+									_react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'amount', id: 'input-amount', value: this.state.amount, onChange: this.amountChanged, onBlur: this.amountBlurred, onFocus: this.amountFocused })
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group', id: 'fg-notes' },
+								_react2.default.createElement(
+									'label',
+									{ className: 'col-md-3 control-label', htmlFor: 'input-notes' },
+									'Notes'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-9' },
+									_react2.default.createElement('textarea', { className: 'form-control', ref: 'notes', id: 'input-notes', defaultValue: transaction.notes })
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'form-group' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'pull-right' },
+									_react2.default.createElement(
+										'button',
+										{ type: 'button', className: 'btn btn-default', disabled: isUpdating, onClick: this.handleCancel },
+										'Cancel'
+									),
+									_react2.default.createElement(
+										'button',
+										{ type: 'submit', className: 'btn btn-raised btn-primary', disabled: isUpdating },
+										'Update'
+									)
+								)
+							)
+						)
+					)
+				);
+			}
+		}]);
+
+		return EditTransactionFormComponent;
+	}(_react.Component);
+
+	exports.default = EditTransactionFormComponent;
 
 /***/ }
 /******/ ]);

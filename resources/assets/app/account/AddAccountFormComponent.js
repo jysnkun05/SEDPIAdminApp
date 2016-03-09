@@ -7,8 +7,15 @@ export default class AddAccountFormComponent extends Component {
 	constructor (props) {
 		super(props);
 
+		this.state = {
+			email: '',
+			is_verified: false
+		};
+
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleCancel = this.handleCancel.bind(this);
+		this.handleEmailChange = this.handleEmailChange.bind(this);
+		this.handleEmailVerifiedChange = this.handleEmailVerifiedChange.bind(this);
 	}
 
 	handleSubmit (e) {
@@ -16,14 +23,27 @@ export default class AddAccountFormComponent extends Component {
 		var name = findDOMNode(this.refs.name).value.trim();
 		var type = findDOMNode(this.refs.type).value.trim();
 		var email = findDOMNode(this.refs.email).value.trim();
+		var is_verified = this.state.is_verified;
 
 		var postData = {
 			name: name,
 			type: type,
-			email: email
+			email: email,
+			is_verified: is_verified
 		};
 
 		this.props.saveAccount(postData);
+	};
+
+	handleEmailChange (e) {
+		if(e.target.value === '')
+			this.setState({email: e.target.value, is_verified: false});
+		else 
+			this.setState({email: e.target.value});
+	};
+
+	handleEmailVerifiedChange (e) {
+		this.setState({is_verified: !this.state.is_verified});
 	};
 
 	handleCancel () {
@@ -59,6 +79,7 @@ export default class AddAccountFormComponent extends Component {
 							<label className="col-md-3 control-label" htmlFor="input-name">Account Name *</label>
 							<div className="col-md-9">
 								<input type="text" className="form-control" ref="name" id="input-name"/>
+								<small>This field is required.</small>
 							</div>
 						</div>
 						<div className="form-group" id="fg-type">
@@ -73,7 +94,12 @@ export default class AddAccountFormComponent extends Component {
 						<div className="form-group" id="fg-email">
 							<label className="col-md-3 control-label" htmlFor="input-email">Email Address</label>
 							<div className="col-md-9">
-								<input type="text" className="form-control" ref="email" id="input-email"/>
+								<input type="text" className="form-control" ref="email" id="input-email" value={this.state.email} onChange={this.handleEmailChange}/>
+								<div className="checkbox">
+									<label>
+										<input type="checkbox" checked={this.state.is_verified} disabled={this.state.email === ''} onChange={this.handleEmailVerifiedChange}/> Set as verified email.	
+									</label>
+								</div>
 							</div>
 						</div>
 						<div className="pull-right">

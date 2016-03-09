@@ -20,6 +20,7 @@ class CreateAccountsTable extends Migration
             $table->string('verification_code', 60)->unique()->nullable();
             $table->boolean('is_verified')->default(false);  
             $table->decimal('balance', 15, 2)->default(0.00);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

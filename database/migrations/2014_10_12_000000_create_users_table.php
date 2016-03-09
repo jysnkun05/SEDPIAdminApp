@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('password', 60);
             $table->uuid('role_id');
 
+            $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
         });

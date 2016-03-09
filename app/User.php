@@ -3,10 +3,12 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     use UuidForKey;
+    use SoftDeletes;
     /**
      * The attributes that are mass assignable.
      *
@@ -17,7 +19,7 @@ class User extends Authenticatable
     ];
 
     protected $table = 'admin_users';
-
+    protected $dates = ['deleted_at'];
     public $incrementing = false;
 
     /**
