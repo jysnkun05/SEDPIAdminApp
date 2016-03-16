@@ -1,12 +1,22 @@
 @extends('layouts.master')
 @section('title', 'Administrator Login')
 @section('content')
-@if (count($errors) > 0)
+@if (session('isLoggedOut'))
+	<div class="col-md-3 col-sm-6 col-xs-12" style="margin:50px auto 15px; float: none; vertical-align: middle;">
+		<div class="alert alert-info">
+			<ul>
+				<li>You have been logged out.</li>
+			</ul>
+		</div>
+	</div>
+@elseif (count($errors) > 0)
     <div class="col-md-3 col-sm-6 col-xs-12" style="margin:50px auto 15px; float: none; vertical-align: middle;">
 		<div class="alert alert-danger">
+			<ul>
 			@foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
+            </ul>
 		</div>
 	</div>
 @else
@@ -16,6 +26,7 @@
 		</div>
 	</div>
 @endif
+
 
 
 <div class="col-md-3 col-sm-6 col-xs-12" style="margin: 50px auto 20px; float: none; vertical-align: middle;">

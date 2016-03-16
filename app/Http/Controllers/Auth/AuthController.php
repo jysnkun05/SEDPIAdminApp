@@ -31,8 +31,9 @@ class AuthController extends Controller
      *
      * @var string
      */
-    protected $redirectPath = 'investors';
+    protected $redirectPath = '/accounts';
     protected $username = 'username';
+    protected $redirectAfterLogout = '/login';
 
     /**
      * Create a new authentication controller instance.
@@ -195,21 +196,12 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getLogout()
-    {
-        return $this->logout();
-    }
-
-    /**
-     * Log the user out of the application.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function logout()
     {
         Auth::guard($this->getGuard())->logout();
 
-        return redirect(property_exists($this, 'redirectAfterLogout') ? $this->redirectAfterLogout : '/');
+        return redirect(property_exists($this, 'redirectAfterLogout') ? $this->redirectAfterLogout : '/')
+            ->with('logoutMessage', 'You have been logged out.');
     }
 
     /**

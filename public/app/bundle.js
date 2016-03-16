@@ -21297,6 +21297,29 @@
 									'div',
 									{ className: 'col-md-12' },
 									_react2.default.createElement(
+										'p',
+										{ className: 'text-left' },
+										'Email Verification and Setup Login Credentials'
+									),
+									_react2.default.createElement(
+										'button',
+										{ className: 'btn btn-primary btn-raised', onClick: this.handleDeleteClick },
+										'Send Email Verification'
+									)
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'row' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'col-md-12' },
+									_react2.default.createElement(
+										'p',
+										{ className: 'text-left' },
+										'Delete Investor Account'
+									),
+									_react2.default.createElement(
 										'button',
 										{ className: 'btn btn-danger btn-raised', onClick: this.handleDeleteClick },
 										'Delete this account'

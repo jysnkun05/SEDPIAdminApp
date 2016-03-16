@@ -34,6 +34,7 @@ Route::group(['middleware' => ['web']], function () {
 		Route::get('/', function () {
 			return redirect('accounts');
 		});
+		Route::get('logout', 'Auth\AuthController@logout');
 
 		Route::group(['prefix' => 'accounts'], function () {
 		    Route::get('/', ['uses' => 'InvestorController@index', 'as' => 'accounts_index']);

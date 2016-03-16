@@ -80,6 +80,13 @@ export default class ViewAccountForm extends Component {
 					<div className="panel-body">
 						<div className="row">
 							<div className="col-md-12">
+								<p className="text-left">Email Verification and Setup Login Credentials</p>
+								<button className="btn btn-primary btn-raised" onClick={this.handleDeleteClick}>Send Email Verification</button>
+							</div>
+						</div>
+						<div className="row">
+							<div className="col-md-12">
+								<p className="text-left">Delete Investor Account</p>
 								<button className="btn btn-danger btn-raised" onClick={this.handleDeleteClick}>Delete this account</button>
 							</div>
 						</div>

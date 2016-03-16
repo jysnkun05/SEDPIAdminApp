@@ -6,7 +6,9 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="javascript:void(0)">Brand</a>
+			<a class="navbar-brand" href="{{url('/')}}">
+				<img src="{{'/images/sedpi_logo.png'}}" width="100px" alt="SEDPI Logo"/>
+			</a>
 		</div>
 		<div class="navbar-collapse collapse navbar-responsive-collapse">
 			<ul class="nav navbar-nav">
@@ -17,7 +19,7 @@
 					<a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">{{Auth::user()->name}}
 						<b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="javascript:void(0)">Logout</a></li>
+							<li><a href="{{url('logout')}}">Logout</a></li>
 						</ul>
 					</li>
 				</ul>

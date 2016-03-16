@@ -21,7 +21,10 @@ class CreateInvestorUsersTable extends Migration
             $table->timestamp('password_changed_at')->nullable();
             $table->uuid('account_id');
             $table->boolean('is_active')->default(false);
+            
+
             $table->softDeletes();
+            $table->rememberToken();
             $table->timestamps();
         });
     }
